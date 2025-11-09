@@ -2,10 +2,10 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-public class ProductInteractable : XRBaseInteractable
+public class ProductInteractable : MonoBehaviour
 {
     [Header("Float Animation")]
-    [SerializeField] float floatHeight = 0.5f;
+    [SerializeField] float floatHeight = 0.2f;
     [SerializeField] float floatSpeed = 1f;
     
     [Header("UI")]
@@ -15,21 +15,37 @@ public class ProductInteractable : XRBaseInteractable
     [SerializeField] float rotationSpeed = 50f;
     
     private Vector3 initialPosition;
+    private Quaternion initialRotation;
     private bool isSelected = false;
     private static ProductInteractable currentlySelected;
+    private XRGrabInteractable grabInteractable;
     
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         initialPosition = transform.position;
+        initialRotation = transform.rotation;
+        
+        // Pega ou adiciona o XRGrabInteractable
+        grabInteractable = GetComponent<XRGrabInteractable>();
+        if (grabInteractable == null)
+        {
+            grabInteractable = gameObject.AddComponent<XRGrabInteractable>();
+        }
+        
+        // Configura para não ser movido fisicamente
+        grabInteractable.movementType = XRBaseInteractable.MovementType.Kinematic;
+        grabInteractable.throwOnDetach = false;
+        
+        // Registra eventos
+        grabInteractable.selectEntered.AddListener(OnSelectEntered);
+        grabInteractable.selectExited.AddListener(OnSelectExited);
+        
         if (techSpecsUI != null)
             techSpecsUI.SetActive(false);
     }
     
-    protected override void OnSelectEntered(SelectEnterEventArgs args)
+    void OnSelectEntered(SelectEnterEventArgs args)
     {
-        base.OnSelectEntered(args);
-        
         // Desseleciona o produto anterior
         if (currentlySelected != null && currentlySelected != this)
         {
@@ -44,10 +60,10 @@ public class ProductInteractable : XRBaseInteractable
             techSpecsUI.SetActive(true);
     }
     
-    protected override void OnSelectExited(SelectExitEventArgs args)
+    void OnSelectExited(SelectExitEventArgs args)
     {
-        base.OnSelectExited(args);
-        Deselect();
+        // Não desseleciona automaticamente - mantém selecionado até clicar em outro
+        // Deselect();
     }
     
     void Update()
@@ -56,7 +72,7 @@ public class ProductInteractable : XRBaseInteractable
         {
             // Animação de flutuação
             float newY = initialPosition.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
-            transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+            transform.position = new Vector3(initialPosition.x, newY, initialPosition.z);
             
             // Rotação automática
             transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
@@ -67,11 +83,21 @@ public class ProductInteractable : XRBaseInteractable
     {
         isSelected = false;
         transform.position = initialPosition;
+        transform.rotation = initialRotation;
         
         if (techSpecsUI != null)
             techSpecsUI.SetActive(false);
             
         if (currentlySelected == this)
             currentlySelected = null;
+    }
+    
+    void OnDestroy()
+    {
+        if (grabInteractable != null)
+        {
+            grabInteractable.selectEntered.RemoveListener(OnSelectEntered);
+            grabInteractable.selectExited.RemoveListener(OnSelectExited);
+        }
     }
 }
