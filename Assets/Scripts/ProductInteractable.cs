@@ -19,6 +19,7 @@ public class ProductInteractable : MonoBehaviour
     private bool isSelected = false;
     private static ProductInteractable currentlySelected;
     private XRGrabInteractable grabInteractable;
+    private float floatTimer = 0f;
     
     void Awake()
     {
@@ -54,6 +55,7 @@ public class ProductInteractable : MonoBehaviour
         
         currentlySelected = this;
         isSelected = true;
+        floatTimer = 0f; // Reseta o timer da animação
         
         // Ativa UI
         if (techSpecsUI != null)
@@ -70,8 +72,10 @@ public class ProductInteractable : MonoBehaviour
     {
         if (isSelected)
         {
+            floatTimer += Time.deltaTime; // Incrementa o timer local
+
             // Animação de flutuação
-            float newY = initialPosition.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
+            float newY = initialPosition.y + ((-Mathf.Cos(floatTimer * floatSpeed) + 1) / 2) * floatHeight;
             transform.position = new Vector3(initialPosition.x, newY, initialPosition.z);
             
             // Rotação automática
