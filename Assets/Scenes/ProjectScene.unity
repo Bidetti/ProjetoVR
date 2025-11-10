@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 47452316}
   - component: {fileID: 47452315}
   m_Layer: 0
-  m_Name: Wall_Back (2)
+  m_Name: Pedestal 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -597,7 +597,7 @@ GameObject:
   - component: {fileID: 361461348}
   - component: {fileID: 361461347}
   m_Layer: 0
-  m_Name: Wall_Back (3)
+  m_Name: Pedestal 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3053,7 +3053,7 @@ GameObject:
   - component: {fileID: 1485005198}
   - component: {fileID: 1485005197}
   m_Layer: 0
-  m_Name: Wall_Back (1)
+  m_Name: Pedestal 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
