@@ -5,7 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 public class ProductInteractable : MonoBehaviour
 {
     [Header("Float Animation")]
-    [SerializeField] float floatHeight = 0.2f;
+    [SerializeField] float floatHeight = 1f;
     [SerializeField] float floatSpeed = 1f;
     
     [Header("UI")]
@@ -13,9 +13,10 @@ public class ProductInteractable : MonoBehaviour
     
     [Header("Rotation")]
     [SerializeField] float rotationSpeed = 50f;
-    
+
     private Vector3 initialPosition;
     private Quaternion initialRotation;
+    private bool isRotated => initialRotation.eulerAngles.x == 90f;
     private bool isSelected = false;
     private static ProductInteractable currentlySelected;
     private XRGrabInteractable grabInteractable;
@@ -75,11 +76,18 @@ public class ProductInteractable : MonoBehaviour
             floatTimer += Time.deltaTime; // Incrementa o timer local
 
             // Animação de flutuação
-            float newY = initialPosition.y + ((-Mathf.Cos(floatTimer * floatSpeed) + 1) / 2) * floatHeight;
+            float newY = initialPosition.y + (-Mathf.Cos(floatTimer * floatSpeed) + 1) / 2 * floatHeight;
             transform.position = new Vector3(initialPosition.x, newY, initialPosition.z);
             
             // Rotação automática
-            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+            if (isRotated)
+            {
+                transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
+            }
+            else
+            {
+                transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+            }
         }
     }
     
