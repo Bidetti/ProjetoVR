@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -10,6 +11,7 @@ public class ProductInteractable : MonoBehaviour
     
     [Header("UI")]
     [SerializeField] GameObject techSpecsUI;
+    [SerializeField] float fadeDuration = 0.5f;
     
     [Header("Rotation")]
     [SerializeField] float rotationSpeed = 50f;
@@ -21,11 +23,24 @@ public class ProductInteractable : MonoBehaviour
     private static ProductInteractable currentlySelected;
     private XRGrabInteractable grabInteractable;
     private float floatTimer = 0f;
+    private CanvasGroup uiCanvasGroup;
+    private Coroutine fadeCoroutine;
     
     void Awake()
     {
         initialPosition = transform.position;
         initialRotation = transform.rotation;
+        
+        if (techSpecsUI != null)
+        {
+            uiCanvasGroup = techSpecsUI.GetComponent<CanvasGroup>();
+            if (uiCanvasGroup == null)
+            {
+                uiCanvasGroup = techSpecsUI.AddComponent<CanvasGroup>();
+            }
+            uiCanvasGroup.alpha = 0f; // Começa totalmente transparente
+            techSpecsUI.SetActive(false);
+        }
         
         // Pega ou adiciona o XRGrabInteractable
         grabInteractable = GetComponent<XRGrabInteractable>();
@@ -41,9 +56,6 @@ public class ProductInteractable : MonoBehaviour
         // Registra eventos
         grabInteractable.selectEntered.AddListener(OnSelectEntered);
         grabInteractable.selectExited.AddListener(OnSelectExited);
-        
-        if (techSpecsUI != null)
-            techSpecsUI.SetActive(false);
     }
     
     void OnSelectEntered(SelectEnterEventArgs args)
@@ -58,9 +70,14 @@ public class ProductInteractable : MonoBehaviour
         isSelected = true;
         floatTimer = 0f; // Reseta o timer da animação
         
-        // Ativa UI
+        // Ativa UI com fade-in
         if (techSpecsUI != null)
+        {
+            if (fadeCoroutine != null)
+                StopCoroutine(fadeCoroutine);
             techSpecsUI.SetActive(true);
+            fadeCoroutine = StartCoroutine(FadeUI(1f));
+        }
     }
     
     void OnSelectExited(SelectExitEventArgs args)
@@ -97,8 +114,13 @@ public class ProductInteractable : MonoBehaviour
         transform.position = initialPosition;
         transform.rotation = initialRotation;
         
+        // Desativa UI com fade-out
         if (techSpecsUI != null)
-            techSpecsUI.SetActive(false);
+        {
+            if (fadeCoroutine != null)
+                StopCoroutine(fadeCoroutine);
+            fadeCoroutine = StartCoroutine(FadeUI(0f));
+        }
             
         if (currentlySelected == this)
             currentlySelected = null;
@@ -110,6 +132,29 @@ public class ProductInteractable : MonoBehaviour
         {
             grabInteractable.selectEntered.RemoveListener(OnSelectEntered);
             grabInteractable.selectExited.RemoveListener(OnSelectExited);
+        }
+    }
+
+    IEnumerator FadeUI(float targetAlpha)
+    {
+        if (uiCanvasGroup == null)
+            yield break;
+
+        float startAlpha = uiCanvasGroup.alpha;
+        float time = 0f;
+
+        while (time < fadeDuration)
+        {
+            time += Time.deltaTime;
+            uiCanvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, time / fadeDuration);
+            yield return null;
+        }
+
+        uiCanvasGroup.alpha = targetAlpha;
+
+        if (targetAlpha == 0f)
+        {
+            techSpecsUI.SetActive(false);
         }
     }
 }
