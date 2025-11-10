@@ -90,6 +90,10 @@ O catálogo conta com **3 produtos Apple** dispostos em pedestais:
 
 ---
 
+## 🥽 Demonstração Curta
+
+![](catalog_vr_gif.gif)
+
 ## 🏗️ Arquitetura do Projeto
 
 ### Estrutura de Pastas
