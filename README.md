@@ -141,9 +141,13 @@ Script auxiliar para gerenciamento da interface de especificações:
 
 - **Unity Hub** instalado
 - **Unity 6000.2.8f1** (versão recomendada)
-- Dispositivo VR compatível com OpenXR
-- **Link/Air Link** configurado (para Quest via PC)
+- **Meta Quest 2** (ou outro dispositivo VR compatível com OpenXR)
+- **App Meta Horizon** instalado no celular
+- **SideQuest** instalado no PC ([Download aqui](https://sidequestvr.com/))
+- **Cabo USB-C** para conectar o Quest ao PC
 - Drivers VR atualizados
+
+> **Nota**: Este tutorial é específico para Meta Quest 2, mas o procedimento é similar para outros dispositivos VR com pequenas adaptações nas configurações de build e conexão.
 
 ### Passos para Execução
 
@@ -156,28 +160,44 @@ Script auxiliar para gerenciamento da interface de especificações:
    - Adicione o projeto através do Unity Hub
    - Aguarde a importação dos assets e pacotes
 
-3. **Configure o Build Target**
-   - `File > Build Settings`
-   - Selecione a plataforma:
-     - **PC VR**: Windows, Mac, Linux
-     - **Standalone VR**: Android (Quest)
+3. **Configure o Build Profile para Meta Quest**
+   - No Unity, vá em `File > Build Profiles`
+   - Selecione **Meta Quest** na lista de plataformas
+   - Clique em **Switch Profile** para habilitar a plataforma
+   - Aguarde o Unity recompilar os assets para Android
 
-4. **Configure o OpenXR**
-   - `Edit > Project Settings > XR Plug-in Management`
-   - Ative o **OpenXR** para sua plataforma
-   - Configure os **Interaction Profiles** necessários
+4. **Habilite o Modo Desenvolvedor**
+   - Abra o **app Meta Horizon** no seu celular
+   - Navegue até as configurações do seu Quest
+   - Ative o **Modo Desenvolvedor** (Developer Mode)
+   - No **Meta Quest 2**, aceite a permissão quando solicitado
 
-5. **Abra a cena principal**
-   - Navegue até `Assets/Scenes/ProjectScene.unity`
-   - Abra a cena no editor
+5. **Conecte o Meta Quest ao PC**
+   - Conecte o **cabo USB-C** do Meta Quest ao seu PC
+   - Coloque o headset e aceite a permissão de **depuração USB** quando aparecer
+   - Mantenha o headset conectado durante o processo
 
-6. **Execute o projeto**
-   - **Modo Editor** (teste rápido): Pressione Play
-     - Use o XR Device Simulator para testar sem headset
-   - **Dispositivo VR**:
-     - Conecte o headset
-     - `File > Build and Run`
-     - ou pressione Play com o headset conectado
+6. **Verifique a conexão com SideQuest**
+   - Abra o **SideQuest** no seu PC
+   - Verifique se o **Oculus Quest 2** foi reconhecido (ícone verde no canto superior direito)
+   - Se não for reconhecido:
+     - Siga o passo a passo de configuração do SideQuest
+     - Reinstale os drivers ADB se necessário
+     - Tente desconectar e reconectar o cabo USB
+
+7. **Build e Deploy no Meta Quest**
+   - Volte ao Unity
+   - Vá em `File > Build Profiles`
+   - Clique em **Refresh** para que o Unity reconheça o Quest conectado
+   - Verifique se o dispositivo aparece na lista
+   - Clique em **Build And Run**
+   - Escolha um local para salvar o APK (ou use o padrão)
+   - Aguarde o build e a instalação automática no Quest
+
+8. **Execute o projeto**
+   - Após a instalação, o aplicativo será iniciado automaticamente no Quest
+   - Você encontrará o app em **Biblioteca > Apps Desconhecidos** (Unknown Sources)
+   - Use os controllers do Quest para interagir com os produtos
 
 ### Controles
 
