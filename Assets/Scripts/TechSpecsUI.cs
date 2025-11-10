@@ -16,8 +16,6 @@ public class TechSpecsUI : MonoBehaviour
     
     void Update()
     {
-        // Faz a UI sempre olhar para a câmera
-        transform.LookAt(Camera.main.transform);
-        transform.Rotate(0, 180, 0);
+
     }
 }
